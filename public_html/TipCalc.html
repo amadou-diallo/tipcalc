@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Tip Calculator</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <script src="TipAmountCalc.js"></script>
+    </head>
+    <body style="background-color: lightblue">
+        <script type="text/javascript">
+           
+
+                var $ = function(id) {
+                    return document.getElementById(id);
+                };
+               
+                
+                function clrscrn() {
+                    $("tipForm").reset();
+                };
+         
+                var curr = new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'USD'
+                });
+                
+                function tcalc() {
+                    var bamt = parseFloat($("billamt").value);
+                    if (isNaN(bamt)) {
+                        alert("Please Enter a numeric bill amount.");
+                        $("billamt").focus();
+                        return; // end the processing of tcalc
+                    } else if (bamt < 0) {
+                        alert("Did they pay you to eat here?");
+                        $("billamt").focus();
+                        return;
+                        
+                    }
+                    
+                    var tP = document.getElementsByName("tP");
+                    // variable tP is an Array of the radio buttons
+                    //tP[0] = 15 %; tP[1] = 18 %; tP[2} = 20%
+                    if (tP[0].checked) {
+                        //selection was 15% radio button
+                        var x = TipAmt(bamt, .15); 
+                        $("result").value = "15% of " + curr.format(bamt) + " = " +
+                                curr.format(x) + " for a total of: " + curr.format(bamt + x);
+                    } else if (tP[1].checked) {
+                        //selection was 18% radio button
+                        var y = TipAmt(bamt, .18);
+                        $("result").value = "18% of " + curr.format(bamt) + " = " + 
+                                curr.format(y) + "for a total of: " + curr.format(bamt + y) ;
+                        
+                    } else if (tP[2].checked) {
+                        // selection was 20% radio button
+                        var z = TipAmt(bamt, .2);
+                        $("result").value = "20% of " + curr.format(bamt) + " = " + 
+                                curr.format(z) + "for a total of: " + curr.format(bamt + z) ;
+                        
+                     } else if(tP[3].checked)  {
+                         var p = parseFloat($("ctip").value);
+                         if (isNaN(p)) {
+                             alert("Please enter a custom tip percent");
+                             $("ctip").focus();
+                             return;
+                         }
+                         if (p < 0) {
+                             alert("Custom tip must be non-negative");
+                             $("ctip").focus();
+                             return;
+                         }
+                         if (p > 1) {
+                             alert("Custom tip should be decimal form (25% = .25)");
+                         }
+                         var ct = TipAmt(bamt,p);
+                         $("result").value = (p*100).toFixed(1) + "% of " +
+                                               curr.format(bamt) + " = " +
+                                               curr.format(ct) + " for a total of: " +
+                                               curr.format(bamt + ct);
+                    } else {
+                        alert("No tip percent selected.");
+                        return;
+                    }
+                }
+                
+                 window.onload = function() {
+                    $("clear").onclick = clrscrn;
+                    $("calc").onclick = tcalc;
+                    
+                };
+                
+            
+        </script>
+      <h1>Tip Calculator</h1>
+          <p>Select the tip percent, enter the bill amount and press calculate:<br></p>
+      <form name="tipForm" id="tipForm" action="" method="post">
+          <p>Tip Percent: <br ></p>
+          <input type="radio" id="tip15" name="tP" value=".15">
+          <label for="tip15">15%</label><br>
+          <input type="radio" id="tip18" name="tP" value=".18">
+          <label for="tip18">18%</label><br>
+          <input type="radio" id="tip20" name="tP" value=".2">
+          <label for="tip20">20%</label><br>
+          <input type="radio" id="tipCust" name="tP" value="">
+          <label for="tipCust">Custom:</label>
+          <input type="text" id="ctip" name="ctip" style="width:50px"><br>
+          <br >
+          <p>Bill Amount:<br></p>
+          <input type="text" id="billamt" name="billamt">
+          <br ><br> 
+          <input type="button" id="calc" name="calc" value="Calculate">
+          <br >
+          <p>Tip: <br ></p>
+          <input type ="text" id="result" name="result" style="width: 300px;">
+          <br ><br >
+          <input type="button" id="clear" name="clear" value="Clear">
+      </form>
+    </body>
+</html>
